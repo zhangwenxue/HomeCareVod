@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="queue_num">排队号码:(\\d+)</string>
+    <string name="calling">正在呼叫…</string>
+    <string name="doctor_name">百洋家健康互联网医院</string>
+    <string name="doctor_calling">%1$s医生向您发起视频通话</string>
+</resources>

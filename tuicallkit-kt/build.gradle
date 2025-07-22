@@ -1,0 +1,68 @@
+import org.gradle.util.VersionNumber
+
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdk 34
+    namespace "com.tencent.qcloud.tuikit.tuicallkit"
+
+    defaultConfig {
+        versionName "3.1.0"
+        versionCode 1
+        minSdkVersion 19
+        targetSdkVersion 34
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    def callSourceJavaVersion = JavaVersion.VERSION_1_8
+    VersionNumber currentGradleVersion = VersionNumber.parse(gradle.gradleVersion)
+    if (currentGradleVersion.major >= 8) {
+        callSourceJavaVersion = JavaVersion.VERSION_17
+    }
+
+    compileOptions {
+        sourceCompatibility callSourceJavaVersion
+        targetCompatibility callSourceJavaVersion
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+
+dependencies {
+    api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+
+    api libs.androidx.appcompat.v131
+    api libs.material
+    api libs.androidx.recyclerview
+    api libs.androidx.constraintlayout
+    api libs.gson.v291
+
+    def projects = this.rootProject.getAllprojects().stream().map { project -> project.name }.collect()
+    if (projects.contains("tuicore")) {
+        api project(':tuicore')
+    } else {
+        api "com.tencent.imsdk:imsdk-plus:8.6.7019"
+        api "com.tencent.liteav.tuikit:tuicore:8.6.7020"
+    }
+    if (projects.contains("engine_source")) {
+        api project(':engine_source')
+    } else {
+        api rootProject.getProperties().containsKey("liteavSdk") ? rootProject.ext.liteavSdk : "com.tencent.liteav:LiteAVSDK_Professional:12.4+"
+        api rootProject.getProperties().containsKey("roomEngineSdk") ? rootProject.ext.roomEngineSdk : "io.trtc.uikit:rtc_room_engine:3.1.+"
+    }
+    if (projects.contains("common")) {
+        api project(':common')
+    } else {
+        api 'io.trtc.uikit:common:3.1.0.946'
+    }
+}
