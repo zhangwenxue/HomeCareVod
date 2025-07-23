@@ -233,6 +233,7 @@ object HomeCareVodSDK {
         }
     }
 
+    @JvmStatic
     fun login(userId: String, callback: (Boolean) -> Unit = {}) {
         scope.runOnUi {
             trace("Trtc:login($userId) request")
@@ -470,7 +471,7 @@ object HomeCareVodSDK {
     }
 
     @JvmStatic
-    fun hangup(errorTrigger: Throwable? = null) {
+    internal fun hangup(errorTrigger: Throwable? = null) {
         stopRing()
         if (vodResp == null && vodReq == null) {
             _callingStateFlow.update { CallingState.HangedUp }
@@ -506,7 +507,7 @@ object HomeCareVodSDK {
     }
 
     @JvmStatic
-    fun answer() {
+    internal fun answer() {
         stopRing()
         val resp = vodResp ?: return
         scope.launch {

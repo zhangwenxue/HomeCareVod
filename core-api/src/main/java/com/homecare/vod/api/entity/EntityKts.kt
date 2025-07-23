@@ -63,12 +63,19 @@ data class VodCallResp(
     val jumping: Boolean = true
 )
 
+@Keep
 enum class OutgoingMsgType(val msgType: Int, val desc: String) {
+    @Keep
     Dialing(34, "发起视频通话"),
+
+    @Keep
     Answering(35, "接听视频通话"),
+
+    @Keep
     Hangup(36, "挂断视频通话")
 }
 
+@Keep
 data class OutGoingMsg(
     val msg: String? = "",
     val fromName: String? = "",

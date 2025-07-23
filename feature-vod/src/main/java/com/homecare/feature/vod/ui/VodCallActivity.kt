@@ -163,8 +163,8 @@ class VodCallActivity : ComponentActivity() {
             }
 
             CallingState.SessionEnd -> {
-                toast("问诊已结束")
-                finish()
+                toast("问诊已结束,感谢您的使用")
+                // finish()
             }
         }
     }

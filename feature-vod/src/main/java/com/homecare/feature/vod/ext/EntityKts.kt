@@ -19,12 +19,25 @@ data class VodSDKConfig(
 )
 
 sealed class LoginState(val userId: String) {
+    @Keep
     data object Idle : LoginState("")
+
+    @Keep
     data class Connecting(val id: String) : LoginState(id)
+
+    @Keep
     data class ConnectSuccess(val id: String) : LoginState(id)
+
+    @Keep
     data class ConnectFailed(val id: String, val code: Int, val error: String?) : LoginState(id)
+
+    @Keep
     data class UserSigExpired(val id: String) : LoginState(id)
+
+    @Keep
     data class KickedOffline(val id: String) : LoginState(id)
+
+    @Keep
     data class LoggedOut(val id: String) : LoginState(id)
 }
 
@@ -45,14 +58,31 @@ data class VodCallReq(
 
 
 sealed interface CallingState {
+    @Keep
     data object Idle : CallingState
+
+    @Keep
     data class Dialing(val response: VodCallResp?) : CallingState
+
+    @Keep
     data class Busy(val lineNumber: Int) : CallingState
+
+    @Keep
     data object Connected : CallingState
+
+    @Keep
     data object HangedUp : CallingState
+
+    @Keep
     data object Rejected : CallingState
+
+    @Keep
     data object SessionEnd : CallingState
+
+    @Keep
     data class Answering(val response: VodCallResp?) : CallingState
+
+    @Keep
     data class OnError(val error: Throwable) : CallingState
 }
 
@@ -66,8 +96,8 @@ fun CallingState.isBusy(): Boolean {
 
 @Keep
 data class ImMsg(
-    val msg: String,
-    val type: String,
+    val msg: String?,
+    val type: String?,
     val id: String,
     val roomId: String,
     val conversationId: String,
@@ -92,22 +122,29 @@ data class ImMsgExt(
     val type: String
 )
 
-sealed class VodImEvent(val imMsg: ImMsg, val msgExt: ImMsgExt?, val msgType: String) {
+@Keep
+sealed class VodImEvent(val imMsg: ImMsg, val msgExt: ImMsgExt?, val msgType: String?) {
+    @Keep
     data class VodConnectedEvent(val msg: ImMsg, val ext: ImMsgExt?) :
         VodImEvent(msg, ext, IM_EVENT_VOD_CONNECTED)
 
+    @Keep
     data class VodRejectedEvent(val msg: ImMsg, val ext: ImMsgExt?) :
         VodImEvent(msg, ext, IM_EVENT_VOD_REJECTED)
 
+    @Keep
     data class VodHangupEvent(val msg: ImMsg, val ext: ImMsgExt?) :
         VodImEvent(msg, ext, IM_EVENT_VOD_HANGED_UP)
 
+    @Keep
     data class VodEndEvent(val msg: ImMsg, val ext: ImMsgExt?) :
         VodImEvent(msg, ext, IM_EVENT_VOD_SESSION_ENDED)
 
+    @Keep
     data class VodIncomingCallEvent(val msg: ImMsg, val ext: ImMsgExt?) :
         VodImEvent(msg, ext, IM_EVENT_VOD_INCOMING_CALL)
 
+    @Keep
     data class UnexpectedEvent(val msg: ImMsg, val ext: ImMsgExt?) : VodImEvent(msg, ext, msg.msg)
 }
 
