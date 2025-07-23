@@ -20,7 +20,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -64,7 +64,7 @@ mavenPublishing {
         )
     )
 
-    coordinates("io.github.zhangwenxue", "homecarevod-core-api", "0.0.1")
+    coordinates("io.github.zhangwenxue", "homecarevod-core-api", "0.0.2")
 
     pom {
         name.set("HomeCareVod Core,.Lib")

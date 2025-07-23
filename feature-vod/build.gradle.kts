@@ -1,5 +1,6 @@
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -19,7 +20,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -43,14 +44,14 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    // implementation(project(":core-api"))
-    implementation("io.github.zhangwenxue:homecarevod-core-api:0.0.1")
+//    implementation(project(":core-api"))
+     implementation("io.github.zhangwenxue:homecarevod-core-api:0.0.2")
     implementation(libs.glide)
-    // api(project(":tuicallkit-kt"))
-    api("io.github.zhangwenxue:homecarevod-tuicallkit-kt:0.0.1")
+//    api(project(":tuicallkit-kt"))
+     api("io.github.zhangwenxue:homecarevod-tuicallkit-kt:0.0.2")
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation("com.tencent.timpush:timpush:8.6.7019")
-    implementation("com.tencent.timpush:fcm:8.6.7019")
+    implementation(libs.timpush)
+    implementation(libs.fcm)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -69,7 +70,7 @@ mavenPublishing {
         )
     )
 
-    coordinates("io.github.zhangwenxue", "homecarevod", "0.0.1")
+    coordinates("io.github.zhangwenxue", "homecarevod", "0.0.2")
 
     pom {
         name.set("HomeCareVod module")

@@ -21,7 +21,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -84,7 +84,7 @@ mavenPublishing {
             )
     )
 
-    coordinates("io.github.zhangwenxue", "homecarevod-tuicallkit-kt", "0.0.1")
+    coordinates("io.github.zhangwenxue", "homecarevod-tuicallkit-kt", "0.0.2")
 
     pom {
         name = "HomeCareVod Core,.Lib"

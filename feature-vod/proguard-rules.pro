@@ -19,3 +19,75 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.tencent.** { *; }
+# Keep HomeCareVodSDK and related classes
+-keep class com.homecare.feature.vod.HomeCareVodSDK { *; }
+-keep class com.homecare.feature.vod.ext.VodSDKConfig { *; }
+-keep class com.homecare.feature.vod.ext.** { *; }
+
+# Keep any classes that might be accessed via reflection
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
+-keepattributes Signature
+
+# Keep Tencent SDK classes
+-keep class com.tencent.** { *; }
+-keep class io.trtc.** { *; }
+
+# Keep Gson related classes
+-keep class com.google.gson.** { *; }
+
+# Keep serializable classes
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# Keep enums
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# Keep native methods
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+# Fix for Java 9+ StringConcatFactory
+-dontwarn java.lang.invoke.StringConcatFactory
+
+# 保留协程状态机相关代码
+-keepclassmembers class kotlin.coroutines.jvm.internal.** {
+    *;
+}
+
+# 保留挂起函数签名
+-keepclassmembers class * {
+    kotlin.coroutines.Continuation suspend*(...);
+}
+
+# Keep Kotlin object INSTANCE fields
+-keepclassmembers class * extends java.lang.Enum {
+    <fields>;
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# Keep Kotlin object classes and their companion objects
+-keepclassmembers class **$Companion {
+    *;
+}
+
+-keepclassmembers class kotlin.Metadata {
+    public <methods>;
+}
+
+-keepclassmembers class * {
+    static final *** INSTANCE;
+}
