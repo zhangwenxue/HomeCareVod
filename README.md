@@ -6,7 +6,7 @@
 > **Gradle(Kotlin)**
 <br>implementation("io.github.zhangwenxue:homecarevod:0.0.2")
 <br>
-<br>
+
 > **Gradle(Short)**
 <br>implementation 'io.github.zhangwenxue:homecarevod:0.0.2'
 
