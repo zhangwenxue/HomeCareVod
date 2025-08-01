@@ -109,15 +109,18 @@ class VodCallActivity : ComponentActivity() {
                 binding.dialingGroup.isVisible = true
                 state.response?.let {
                     binding.doctorAvatarPlaceholder.isVisible = false
-                    val glideUrl = GlideUrl(
-                        it.doctorHeadImg,
-                        LazyHeaders.Builder()
-                            .addHeader("referer", "https://wacdih.shihuahui-health.com/")
-                            .build()
-                    )
-                    Glide.with(binding.doctorAvatar)
-                        .load(glideUrl)
-                        .into(binding.doctorAvatar)
+                    it.doctorHeadImg?.let { url ->
+                        val glideUrl = GlideUrl(
+                            url,
+                            LazyHeaders.Builder()
+                                .addHeader("referer", "https://wacdih.shihuahui-health.com/")
+                                .build()
+                        )
+                        Glide.with(binding.doctorAvatar)
+                            .load(glideUrl)
+                            .into(binding.doctorAvatar)
+                    }
+
                     binding.doctorName.text = "${it.doctorName}${it.titleName ?: ""}"
                 }
             }

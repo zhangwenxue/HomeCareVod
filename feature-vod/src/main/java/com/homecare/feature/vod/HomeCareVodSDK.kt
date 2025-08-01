@@ -234,16 +234,16 @@ object HomeCareVodSDK {
     }
 
     @JvmStatic
-    fun login(userId: String, callback: (Boolean) -> Unit = {}) {
+    fun login(registeredPatientId: String, callback: (Boolean) -> Unit = {}) {
         scope.runOnUi {
-            trace("Trtc:login($userId) request")
-            if (TUILogin.isUserLogined() && TUILogin.getUserId() == userId) {
-                trace("Trtc:$userId already logged")
+            trace("Trtc:login($registeredPatientId) request")
+            if (TUILogin.isUserLogined() && TUILogin.getUserId() == registeredPatientId) {
+                trace("Trtc:$registeredPatientId already logged")
                 scope.runOnUi { callback(true) }
                 return@runOnUi
             }
-            if (userId.isBlank()) {
-                error("Trtc:login error,userId is black:$userId")
+            if (registeredPatientId.isBlank()) {
+                error("Trtc:login error,userId is black:$registeredPatientId")
                 scope.runOnUi { callback(false) }
                 _loginStateFlow.update {
                     LoginState.ConnectFailed(
@@ -256,9 +256,9 @@ object HomeCareVodSDK {
             }
 
             scope.launch {
-                _loginStateFlow.update { LoginState.Connecting(userId) }
-                trace("Srv:request user sig($userId)")
-                val userSig = VodApi.getTRTCUserSig(userId)
+                _loginStateFlow.update { LoginState.Connecting(registeredPatientId) }
+                trace("Srv:request user sig($registeredPatientId)")
+                val userSig = VodApi.getTRTCUserSig(registeredPatientId)
                 if (userSig.isFailure) {
                     error("Srv:request sig failure", userSig.exceptionOrNull())
                     LoginState.ConnectFailed(
@@ -274,17 +274,17 @@ object HomeCareVodSDK {
                 TUILogin.login(
                     appContext,
                     SDK_APP_ID,
-                    userId,
+                    registeredPatientId,
                     userSig.getOrNull()?.userSig ?: "",
                     object : TUICallback() {
                         override fun onSuccess() {
-                            trace("Trtc:${userId} login success")
+                            trace("Trtc:${registeredPatientId} login success")
                             scope.runOnUi { callback(true) }
                             _loginStateFlow.update { LoginState.ConnectSuccess(TUILogin.getLoginUser()) }
                         }
 
                         override fun onError(errorCode: Int, errorMessage: String?) {
-                            error("Trtc:${userId} login error,code:$errorCode,msg:$errorMessage")
+                            error("Trtc:${registeredPatientId} login error,code:$errorCode,msg:$errorMessage")
                             scope.runOnUi { callback(false) }
                             _loginStateFlow.update {
                                 LoginState.ConnectFailed(
@@ -322,14 +322,14 @@ object HomeCareVodSDK {
     @JvmStatic
     fun callWithJwt(
         jwtToken: String,
-        registeredUserId: String,
+        registeredPatientId: String,
         patientId: String,
         symptomsDescription: String = "",
         fileList: List<String> = emptyList(),
         hasEcg: Boolean = false
     ) {
         val request = VodCallReq(
-            registeredImId = registeredUserId,
+            registeredImId = registeredPatientId,
             patientImId = patientId,
             symptomsDescription = symptomsDescription,
             jwtToken = jwtToken,
@@ -344,7 +344,7 @@ object HomeCareVodSDK {
     @JvmStatic
     fun call(
         token: String,
-        registeredUserId: String,
+        registeredPatientId: String,
         patientId: String,
         symptomsDescription: String = "",
         fileList: List<String> = emptyList(),
@@ -353,7 +353,7 @@ object HomeCareVodSDK {
     ) {
         val request = VodCallReq(
             token = token,
-            registeredImId = registeredUserId,
+            registeredImId = registeredPatientId,
             patientImId = patientId,
             symptomsDescription = symptomsDescription,
             fileList = fileList,
