@@ -168,14 +168,16 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
             context,
             CallManager.instance.userState.selfUser.get()
         )
-        resetView(videoViewBig)
+        videoViewBig?.let { resetView(it) }
         layoutRenderBig.removeAllViews()
-        layoutRenderBig.addView(videoViewBig)
+        videoViewBig?.let { layoutRenderBig.addView(it) }
 
         val isCameraOpen = CallManager.instance.mediaState.isCameraOpened.get()
         val isFrontCamera = CallManager.instance.mediaState.isFrontCamera.get()
         if (isCameraOpen) {
-            CallManager.instance.openCamera(isFrontCamera, videoViewBig, null)
+            videoViewBig?.let {
+                CallManager.instance.openCamera(isFrontCamera, it, null)
+            }
         }
     }
 
@@ -193,19 +195,19 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
 
     private fun switchRenderLayout() {
         if (CallManager.instance.userState.selfUser.get().callStatus.get() == TUICallDefine.Status.Accept) {
-            resetView(videoViewBig)
-            resetView(videoViewSmall)
+            videoViewBig?.let { resetView(it) }
+            videoViewSmall?.let { resetView(it) }
             layoutRenderSmall.removeAllViews()
             layoutRenderBig.removeAllViews()
 
             updateSmallViewSize()
             val isViewReversed = CallManager.instance.viewState.reverse1v1CallRenderView
             if (isViewReversed) {
-                layoutRenderSmall.addView(videoViewSmall)
-                layoutRenderBig.addView(videoViewBig)
+                videoViewSmall?.let { layoutRenderSmall.addView(it) }
+                videoViewBig?.let { layoutRenderBig.addView(it) }
             } else {
-                layoutRenderSmall.addView(videoViewBig)
-                layoutRenderBig.addView(videoViewSmall)
+                videoViewBig?.let { layoutRenderBig.addView(it) }
+                videoViewSmall?.let { layoutRenderSmall.addView(it) }
             }
             CallManager.instance.reverse1v1CallRenderView(!isViewReversed)
         }
