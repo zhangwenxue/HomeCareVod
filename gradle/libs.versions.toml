@@ -1,12 +1,12 @@
 [versions]
-agp = "8.11.0"
-appcompatVersion = "1.3.1"
+agp = "8.11.1"
+appcompatVersion = "1.7.1"
 fcm = "8.6.7019"
 glide = "4.16.0"
-gsonVersion = "2.9.1"
+gsonVersion = "2.13.1"
 constraintlayout = "2.2.1"
-homecarevod = "0.0.2"
-kotlin = "2.2.0"
+homecarevod = "0.0.4"
+kotlin = "2.0.21"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -20,8 +20,8 @@ retrofit = "3.0.0"
 gson = "2.13.1"
 liteavsdk_trtc = "latest.release"
 material = "1.12.0"
-okhttpLoggingInterceptor = "5.1.0"
-convertGson = "3.0.0"
+okhttpLoggingInterceptor = "4.12.0"
+convertGson = "2.9.0"
 
 [libraries]
 androidx-appcompat-v131 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }

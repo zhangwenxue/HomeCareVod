@@ -73,7 +73,7 @@ object HomeCareVodSDK {
     private val _callingStateFlow = MutableStateFlow<CallingState>(CallingState.Idle)
     val callingStateFlow = _callingStateFlow.asStateFlow()
 
-    private var onHangup: (String?) -> Unit = {}
+    var onHangup: (String?) -> Unit = {}
     private val loginListener = object : TUILoginListener() {
         override fun onKickedOffline() {
             super.onKickedOffline()
@@ -334,8 +334,7 @@ object HomeCareVodSDK {
         patientId: String,
         symptomsDescription: String = "",
         fileList: List<String> = emptyList(),
-        hasEcg: Boolean = false,
-        onHangup: (String?) -> Unit = {}
+        hasEcg: Boolean = false
     ) {
         val request = VodCallReq(
             registeredImId = registeredPatientId,
@@ -345,7 +344,6 @@ object HomeCareVodSDK {
             fileList = fileList,
             hasEcg = hasEcg
         )
-        this.onHangup = onHangup
         scope.runOnUi {
             dialInternal(request)
         }
@@ -359,8 +357,7 @@ object HomeCareVodSDK {
         symptomsDescription: String = "",
         fileList: List<String> = emptyList(),
         hasEcg: Boolean = false,
-        agency: String? = null,
-        onHangup: (String?) -> Unit = {}
+        agency: String? = null
     ) {
         val request = VodCallReq(
             token = token,
@@ -370,7 +367,6 @@ object HomeCareVodSDK {
             fileList = fileList,
             hasEcg = hasEcg
         )
-        this.onHangup = onHangup
         scope.runOnUi {
             dialInternal(request, false, agency)
         }

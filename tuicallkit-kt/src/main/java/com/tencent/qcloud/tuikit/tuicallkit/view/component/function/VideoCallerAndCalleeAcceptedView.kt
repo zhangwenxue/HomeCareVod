@@ -36,8 +36,9 @@ class VideoCallerAndCalleeAcceptedView(context: Context) : RelativeLayout(contex
         textCamera.text = getCameraHint(it)
 
         if (it && CallManager.instance.callState.scene.get() == TUICallDefine.Scene.SINGLE_CALL) {
-            imageSwitchCamera.visibility = VISIBLE
-            imageBlurBackground.visibility = if (GlobalState.instance.enableVirtualBackground) VISIBLE else GONE
+            imageSwitchCamera.visibility = GONE
+            imageBlurBackground.visibility =
+                if (GlobalState.instance.enableVirtualBackground) VISIBLE else GONE
         } else {
             imageSwitchCamera.visibility = GONE
             imageBlurBackground.visibility = GONE
@@ -103,19 +104,23 @@ class VideoCallerAndCalleeAcceptedView(context: Context) : RelativeLayout(contex
 
         val isMute = CallManager.instance.mediaState.isMicrophoneMuted.get()
         imageMic.isActivated = isMute
-        val micResId = if (isMute) R.string.tuicallkit_toast_disable_mute else R.string.tuicallkit_toast_enable_mute
+        val micResId =
+            if (isMute) R.string.tuicallkit_toast_disable_mute else R.string.tuicallkit_toast_enable_mute
         textMic.text = context.getString(micResId)
 
-        val isSpeaker = CallManager.instance.mediaState.audioPlayoutDevice.get() == AudioPlaybackDevice.Speakerphone
-        val speakerResId = if (isSpeaker) R.string.tuicallkit_toast_speaker else R.string.tuicallkit_toast_use_earpiece
+        val isSpeaker =
+            CallManager.instance.mediaState.audioPlayoutDevice.get() == AudioPlaybackDevice.Speakerphone
+        val speakerResId =
+            if (isSpeaker) R.string.tuicallkit_toast_speaker else R.string.tuicallkit_toast_use_earpiece
         imageSpeaker.isActivated = isSpeaker
         textSpeaker.text = context.getString(speakerResId)
 
         val isCameraOpened = CallManager.instance.mediaState.isCameraOpened.get()
         if (CallManager.instance.callState.scene.get() == TUICallDefine.Scene.SINGLE_CALL && isCameraOpened
         ) {
-            imageSwitchCamera.visibility = VISIBLE
-            imageBlurBackground.visibility = if (GlobalState.instance.enableVirtualBackground) VISIBLE else GONE
+            imageSwitchCamera.visibility = GONE
+            imageBlurBackground.visibility =
+                if (GlobalState.instance.enableVirtualBackground) VISIBLE else GONE
         } else {
             imageSwitchCamera.visibility = GONE
             imageBlurBackground.visibility = GONE
@@ -163,7 +168,8 @@ class VideoCallerAndCalleeAcceptedView(context: Context) : RelativeLayout(contex
                 CallManager.instance.closeCamera()
             } else {
                 val selfUser = CallManager.instance.userState.selfUser.get()
-                val camera: TUICommonDefine.Camera = CallManager.instance.mediaState.isFrontCamera.get()
+                val camera: TUICommonDefine.Camera =
+                    CallManager.instance.mediaState.isFrontCamera.get()
                 val videoView = VideoFactory.instance.findVideoView(selfUser.id)
 
                 CallManager.instance.openCamera(camera, videoView, null)
@@ -206,16 +212,19 @@ class VideoCallerAndCalleeAcceptedView(context: Context) : RelativeLayout(contex
 
         if (isExpand) {
             rootView.transitionToStart()
-            rootView.getConstraintSet(R.id.start)?.getConstraint(R.id.iv_expanded)?.propertySet?.visibility = VISIBLE
+            rootView.getConstraintSet(R.id.start)
+                ?.getConstraint(R.id.iv_expanded)?.propertySet?.visibility = VISIBLE
         } else {
             rootView.transitionToEnd()
         }
-        rootView.background = ContextCompat.getDrawable(context, R.drawable.tuicallkit_bg_group_call_bottom)
+        rootView.background =
+            ContextCompat.getDrawable(context, R.drawable.tuicallkit_bg_group_call_bottom)
         isBottomViewExpand = isExpand
     }
 
     private fun enableSwipeFunctionView(enable: Boolean) {
-        val enableSwipe = (CallManager.instance.callState.scene.get() != TUICallDefine.Scene.SINGLE_CALL) && enable
+        val enableSwipe =
+            (CallManager.instance.callState.scene.get() != TUICallDefine.Scene.SINGLE_CALL) && enable
         rootView.enableTransition(R.id.video_function_view_transition, enableSwipe)
     }
 }

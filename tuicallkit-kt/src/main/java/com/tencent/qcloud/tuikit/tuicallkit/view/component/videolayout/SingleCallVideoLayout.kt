@@ -53,11 +53,12 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
         if (CallManager.instance.callState.mediaType.get() == TUICallDefine.MediaType.Audio) {
             return@Observer
         }
-        if (it == TUICallDefine.Status.Accept) {
+        /*if (it == TUICallDefine.Status.Accept) {
+         *
             updateUserInfoView(false)
             initSmallVideoView()
             switchRenderLayout()
-        }
+        }*/
     }
 
     private var isVirtualBackgroundOpenedObserver = Observer<Boolean> {
@@ -126,7 +127,7 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
 
     private fun initVideoLayout() {
         val mediaType = CallManager.instance.callState.mediaType.get()
-        val callStatus = CallManager.instance.userState.selfUser.get().callStatus.get()
+        // val callStatus = CallManager.instance.userState.selfUser.get().callStatus.get()
 
         if (mediaType == TUICallDefine.MediaType.Audio) {
             updateUserInfoView(true)
@@ -137,14 +138,18 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
             initGestureListener(layoutRenderSmall)
             layoutRenderBig.visibility = VISIBLE
 
-            if (callStatus == TUICallDefine.Status.Accept) {
+            updateUserInfoView(false)
+            layoutRenderSmall.visibility = VISIBLE
+            initSmallVideoView()
+            /*if (callStatus == TUICallDefine.Status.Accept) {
+            *
                 updateUserInfoView(false)
                 layoutRenderSmall.visibility = VISIBLE
                 initSmallVideoView()
             } else {
                 updateUserInfoView(true)
                 layoutRenderSmall.visibility = GONE
-            }
+            }*/
         }
     }
 
