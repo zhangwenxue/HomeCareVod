@@ -50,8 +50,6 @@ object HomeCareVodSDK {
     const val ORIENTATION_LANDSCAPE = 1
     const val ORIENTATION_AUTO = 2
     private const val SDK_APP_ID = 1600027488
-    private const val AVATAR =
-        "https://liteav.sdk.qcloud.com/app/res/picture/voiceroom/avatar/user_avatar1.png"
     private val scope by lazy {
         CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     }
@@ -75,34 +73,35 @@ object HomeCareVodSDK {
     private val _callingStateFlow = MutableStateFlow<CallingState>(CallingState.Idle)
     val callingStateFlow = _callingStateFlow.asStateFlow()
 
+    private var onHangup: (String?) -> Unit = {}
     private val loginListener = object : TUILoginListener() {
         override fun onKickedOffline() {
             super.onKickedOffline()
             stopRing()
-            trace("Trtc:${TUILogin.getLoginUser()} on kicked offline")
+            trace("Trtc:${getLoginUser()} on kicked offline")
             removeIMListener()
             config.kickOfflineCallback.invoke()
-            _loginStateFlow.update { LoginState.KickedOffline(TUILogin.getLoginUser()) }
+            _loginStateFlow.update { LoginState.KickedOffline(getLoginUser()) }
             _loginStateFlow.update { LoginState.Idle }
         }
 
         override fun onConnecting() {
-            trace("Trtc:${TUILogin.getLoginUser()} on connecting")
-            _loginStateFlow.update { LoginState.Connecting(TUILogin.getLoginUser()) }
+            trace("Trtc:${getLoginUser()} on connecting")
+            _loginStateFlow.update { LoginState.Connecting(getLoginUser()) }
         }
 
         override fun onConnectSuccess() {
-            trace("Trtc:${TUILogin.getLoginUser()} on connect success")
+            trace("Trtc:${getLoginUser()} on connect success")
             addIMListener()
-            _loginStateFlow.update { LoginState.ConnectSuccess(TUILogin.getLoginUser()) }
+            _loginStateFlow.update { LoginState.ConnectSuccess(getLoginUser()) }
         }
 
         override fun onConnectFailed(code: Int, error: String?) {
             stopRing()
-            error("Trtc:${TUILogin.getLoginUser()} on connect failed,code:$code,error:$error")
+            error("Trtc:${getLoginUser()} on connect failed,code:$code,error:$error")
             _loginStateFlow.update {
                 LoginState.ConnectFailed(
-                    TUILogin.getLoginUser(),
+                    getLoginUser(),
                     code,
                     error
                 )
@@ -112,10 +111,10 @@ object HomeCareVodSDK {
         }
 
         override fun onUserSigExpired() {
-            val userId = TUILogin.getLoginUser()
+            val userId = getLoginUser()
             trace("Trtc:$userId on user sig expired,login automatically")
-            _loginStateFlow.update { LoginState.UserSigExpired(TUILogin.getLoginUser()) }
-            login(userId)
+            _loginStateFlow.update { LoginState.UserSigExpired(getLoginUser()) }
+            userId?.let { login(it) }
         }
     }
 
@@ -164,6 +163,7 @@ object HomeCareVodSDK {
                             stopRing()
                             _callingStateFlow.update { CallingState.HangedUp }
                             _callingStateFlow.update { CallingState.Idle }
+                            endCallback()
                         }
 
                         is VodImEvent.VodIncomingCallEvent -> {
@@ -172,7 +172,7 @@ object HomeCareVodSDK {
                             vodReq = VodCallReq(
                                 registeredIdCardNo = "",
                                 registeredUserName = "",
-                                registeredImId = TUILogin.getLoginUser(),
+                                registeredImId = getLoginUser() ?: "",
                                 patientIdCardNo = "",
                                 patientName = vodEvent.msg.patientName,
                                 patientImId = "",
@@ -186,7 +186,7 @@ object HomeCareVodSDK {
                                 doctorName = vodEvent.msg.fromName,
                                 deptName = "",
                                 titleName = "",
-                                patientId = TUILogin.getLoginUser(),
+                                patientId = getLoginUser() ?: "",
                                 patientName = vodEvent.msg.patientName,
                                 refId = "",
                                 refPatientName = "",
@@ -202,6 +202,7 @@ object HomeCareVodSDK {
                                 // 医生拒接
                                 _callingStateFlow.update { CallingState.Rejected }
                                 _callingStateFlow.update { CallingState.Idle }
+                                endCallback()
                             }
                         }
 
@@ -234,6 +235,13 @@ object HomeCareVodSDK {
     }
 
     @JvmStatic
+    fun isLoggedIn(id: String? = null): Boolean {
+        if (!TUILogin.isUserLogined()) return false
+        if (id == null) return true
+        return getLoginUser() == id
+    }
+
+    @JvmStatic
     fun login(registeredPatientId: String, callback: (Boolean) -> Unit = {}) {
         scope.runOnUi {
             trace("Trtc:login($registeredPatientId) request")
@@ -247,7 +255,7 @@ object HomeCareVodSDK {
                 scope.runOnUi { callback(false) }
                 _loginStateFlow.update {
                     LoginState.ConnectFailed(
-                        TUILogin.getLoginUser(),
+                        getLoginUser(),
                         INVALID_USER_ID,
                         "Invalid user id"
                     )
@@ -262,7 +270,7 @@ object HomeCareVodSDK {
                 if (userSig.isFailure) {
                     error("Srv:request sig failure", userSig.exceptionOrNull())
                     LoginState.ConnectFailed(
-                        TUILogin.getLoginUser(),
+                        getLoginUser(),
                         ERROR_USER_SIG,
                         "Error userSig:${userSig.exceptionOrNull()?.message}"
                     )
@@ -280,7 +288,7 @@ object HomeCareVodSDK {
                         override fun onSuccess() {
                             trace("Trtc:${registeredPatientId} login success")
                             scope.runOnUi { callback(true) }
-                            _loginStateFlow.update { LoginState.ConnectSuccess(TUILogin.getLoginUser()) }
+                            _loginStateFlow.update { LoginState.ConnectSuccess(getLoginUser()) }
                         }
 
                         override fun onError(errorCode: Int, errorMessage: String?) {
@@ -288,7 +296,7 @@ object HomeCareVodSDK {
                             scope.runOnUi { callback(false) }
                             _loginStateFlow.update {
                                 LoginState.ConnectFailed(
-                                    TUILogin.getLoginUser(),
+                                    getLoginUser(),
                                     errorCode,
                                     errorMessage
                                 )
@@ -307,7 +315,7 @@ object HomeCareVodSDK {
             TUILogin.logout(object : TUICallback() {
                 override fun onSuccess() {
                     trace("Trtc:logout success")
-                    _loginStateFlow.update { LoginState.LoggedOut(TUILogin.getLoginUser()) }
+                    _loginStateFlow.update { LoginState.LoggedOut(getLoginUser()) }
                     action(true)
                 }
 
@@ -326,7 +334,8 @@ object HomeCareVodSDK {
         patientId: String,
         symptomsDescription: String = "",
         fileList: List<String> = emptyList(),
-        hasEcg: Boolean = false
+        hasEcg: Boolean = false,
+        onHangup: (String?) -> Unit = {}
     ) {
         val request = VodCallReq(
             registeredImId = registeredPatientId,
@@ -336,6 +345,7 @@ object HomeCareVodSDK {
             fileList = fileList,
             hasEcg = hasEcg
         )
+        this.onHangup = onHangup
         scope.runOnUi {
             dialInternal(request)
         }
@@ -349,7 +359,8 @@ object HomeCareVodSDK {
         symptomsDescription: String = "",
         fileList: List<String> = emptyList(),
         hasEcg: Boolean = false,
-        agency: String? = null
+        agency: String? = null,
+        onHangup: (String?) -> Unit = {}
     ) {
         val request = VodCallReq(
             token = token,
@@ -359,6 +370,7 @@ object HomeCareVodSDK {
             fileList = fileList,
             hasEcg = hasEcg
         )
+        this.onHangup = onHangup
         scope.runOnUi {
             dialInternal(request, false, agency)
         }
@@ -544,7 +556,7 @@ object HomeCareVodSDK {
 
     private fun setCallkitInfo(request: VodCallReq) {
         trace("Trtc:set callkit info:${request}")
-        TUICallKit.createInstance(appContext).setSelfInfo(request.patientName, AVATAR, object :
+        TUICallKit.createInstance(appContext).setSelfInfo(request.patientName, null, object :
             TUICommonDefine.Callback {
             override fun onSuccess() {
                 trace("Trtc:set callkit info success")
@@ -593,11 +605,21 @@ object HomeCareVodSDK {
 
         if (status != it && it == TUICallDefine.Status.None) {
             trace("Trtc:callStatusObserver, callStatus: $it")
+            endCallback()
             hangup()
         }
         status = it
     }
 
+    internal fun endCallback() {
+        trace("Trtc:endCallback")
+        val conversationId = vodResp?.conversationId
+        onHangup(conversationId)
+    }
+
+    private fun getLoginUser(): String? {
+        return if (TUILogin.isUserLogined()) TUILogin.getLoginUser() else null
+    }
 
     private fun trace(info: String) {
         Log.i("_HomeCareVod", "<${Thread.currentThread().name}>${info}")

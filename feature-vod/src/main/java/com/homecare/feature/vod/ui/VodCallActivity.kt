@@ -98,6 +98,7 @@ class VodCallActivity : ComponentActivity() {
                     .setNegativeButton(
                         "我知道了"
                     ) { dialog, which ->
+                        HomeCareVodSDK.endCallback()
                         finish()
                         dialog.dismiss()
                     }.create()

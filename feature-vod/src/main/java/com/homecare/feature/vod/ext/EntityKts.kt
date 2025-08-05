@@ -18,27 +18,27 @@ data class VodSDKConfig(
     val kickOfflineCallback: () -> Unit,
 )
 
-sealed class LoginState(val userId: String) {
+sealed class LoginState(val userId: String?) {
     @Keep
     data object Idle : LoginState("")
 
     @Keep
-    data class Connecting(val id: String) : LoginState(id)
+    data class Connecting(val id: String?) : LoginState(id)
 
     @Keep
-    data class ConnectSuccess(val id: String) : LoginState(id)
+    data class ConnectSuccess(val id: String?) : LoginState(id)
 
     @Keep
-    data class ConnectFailed(val id: String, val code: Int, val error: String?) : LoginState(id)
+    data class ConnectFailed(val id: String?, val code: Int, val error: String?) : LoginState(id)
 
     @Keep
-    data class UserSigExpired(val id: String) : LoginState(id)
+    data class UserSigExpired(val id: String?) : LoginState(id)
 
     @Keep
-    data class KickedOffline(val id: String) : LoginState(id)
+    data class KickedOffline(val id: String?) : LoginState(id)
 
     @Keep
-    data class LoggedOut(val id: String) : LoginState(id)
+    data class LoggedOut(val id: String?) : LoginState(id)
 }
 
 @Keep

@@ -64,7 +64,7 @@ mavenPublishing {
         )
     )
 
-    coordinates("io.github.zhangwenxue", "homecarevod-core-api", "0.0.2")
+    coordinates("io.github.zhangwenxue", "homecarevod-core-api", "0.0.4")
 
     pom {
         name.set("HomeCareVod Core,.Lib")

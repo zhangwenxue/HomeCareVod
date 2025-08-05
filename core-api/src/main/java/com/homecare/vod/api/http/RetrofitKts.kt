@@ -47,26 +47,30 @@ internal inline fun <reified S> retrofitService(
     .build()
     .create(S::class.java)
 
+private val loggingInterceptor = HttpLoggingInterceptor {
+    Log.i("_HttpRequest", it)
+}.apply {
+    level = HttpLoggingInterceptor.Level.BODY
+}
+
+
 internal fun okHttpClient(
     enableLog: Boolean = true,
     vararg interceptors: Interceptor? = emptyArray()
 ) = OkHttpClient.Builder().apply {
     if (enableLog) {
-        addInterceptor(HttpLoggingInterceptor {
-            Log.i("_HttpRequest", it)
-        }.apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        })
+        addInterceptor(loggingInterceptor)
     }
     interceptors.filterNotNull().forEach {
         addInterceptor(it)
     }
 }.apply {
+    val trustManager = trustedCerts[0] as X509TrustManager
     val factory = SSLContext.getInstance("SSL").let {
         it.init(null, trustedCerts, SecureRandom())
         it.socketFactory
     }
-    sslSocketFactory(factory, trustedCerts[0] as X509TrustManager)
+    sslSocketFactory(factory, trustManager)
     hostnameVerifier { _, _ -> true }
 }.retryOnConnectionFailure(true)
     .build()
