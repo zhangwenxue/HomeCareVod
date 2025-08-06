@@ -2,6 +2,7 @@ package com.tencent.qcloud.tuikit.tuicallkit.view.component.videolayout
 
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -53,12 +54,12 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
         if (CallManager.instance.callState.mediaType.get() == TUICallDefine.MediaType.Audio) {
             return@Observer
         }
-        /*if (it == TUICallDefine.Status.Accept) {
-         *
+        if (it == TUICallDefine.Status.Accept) {
+            Log.e("_accept_trace", "callStatusObserver: Accept")
             updateUserInfoView(false)
             initSmallVideoView()
             switchRenderLayout()
-        }*/
+        }
     }
 
     private var isVirtualBackgroundOpenedObserver = Observer<Boolean> {
@@ -127,7 +128,7 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
 
     private fun initVideoLayout() {
         val mediaType = CallManager.instance.callState.mediaType.get()
-        // val callStatus = CallManager.instance.userState.selfUser.get().callStatus.get()
+        val callStatus = CallManager.instance.userState.selfUser.get().callStatus.get()
 
         if (mediaType == TUICallDefine.MediaType.Audio) {
             updateUserInfoView(true)
@@ -138,18 +139,14 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
             initGestureListener(layoutRenderSmall)
             layoutRenderBig.visibility = VISIBLE
 
-            updateUserInfoView(false)
-            layoutRenderSmall.visibility = VISIBLE
-            initSmallVideoView()
-            /*if (callStatus == TUICallDefine.Status.Accept) {
-            *
+            if (callStatus == TUICallDefine.Status.Accept) {
                 updateUserInfoView(false)
                 layoutRenderSmall.visibility = VISIBLE
                 initSmallVideoView()
             } else {
                 updateUserInfoView(true)
                 layoutRenderSmall.visibility = GONE
-            }*/
+            }
         }
     }
 
@@ -188,6 +185,7 @@ class SingleCallVideoLayout(context: Context) : ConstraintLayout(context) {
 
     private fun initSmallVideoView() {
         updateSmallViewSize()
+        Log.e("_accept_trace", "initSmallVideoView: remoteUser = $remoteUser")
         videoViewSmall = VideoFactory.instance.createVideoView(context, remoteUser)
         if (videoViewSmall == null) return
         resetView(videoViewSmall)

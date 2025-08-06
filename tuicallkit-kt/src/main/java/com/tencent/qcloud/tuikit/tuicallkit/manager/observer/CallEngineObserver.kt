@@ -2,6 +2,7 @@ package com.tencent.qcloud.tuikit.tuicallkit.manager.observer
 
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Log
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.cloud.tuikit.engine.call.TUICallObserver
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
@@ -156,6 +157,7 @@ class CallEngineObserver : TUICallObserver() {
     }
 
     override fun onUserJoin(userId: String?) {
+        Log.i("_accept_trace", "onUserJoin, userId: $userId")
         Logger.i(TAG, "onUserJoin, userId: $userId")
         if (userId.isNullOrEmpty() || userId.contains(Constants.AI_TRANSLATION_ROBOT)) {
             return
@@ -166,7 +168,7 @@ class CallEngineObserver : TUICallObserver() {
             user = UserState.User()
             user.id = userId
         }
-
+        Log.i("_accept_trace", "onUserJoin, userId: $userId ,callback")
         user.callStatus.set(TUICallDefine.Status.Accept)
 
         val remoteUserList = CallManager.instance.userState.remoteUserList.get()

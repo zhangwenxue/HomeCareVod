@@ -1,6 +1,7 @@
 package com.tencent.qcloud.tuikit.tuicallkit.manager
 
 import android.content.Context
+import android.util.Log
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.cloud.tuikit.engine.call.TUICallEngine
 import com.tencent.cloud.tuikit.engine.common.TUICommonDefine
@@ -324,6 +325,7 @@ class CallManager private constructor(context: Context) : ITUINotification {
             object : TUICommonDefine.Callback {
                 override fun onSuccess() {
                     userState.selfUser.get().callRole = TUICallDefine.Role.Called
+                    Log.w("_accept_trace"," joinInGroupCall onSuccess")
                     userState.selfUser.get().callStatus.set(TUICallDefine.Status.Accept)
 
                     callState.scene.set(TUICallDefine.Scene.SINGLE_CALL)

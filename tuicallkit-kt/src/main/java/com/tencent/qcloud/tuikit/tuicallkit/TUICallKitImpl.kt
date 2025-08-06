@@ -2,6 +2,7 @@ package com.tencent.qcloud.tuikit.tuicallkit
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine
 import com.tencent.cloud.tuikit.engine.call.TUICallDefine.CallParams
 import com.tencent.cloud.tuikit.engine.call.TUICallEngine
@@ -420,6 +421,7 @@ class TUICallKitImpl private constructor(context: Context) : TUICallKit() {
     }
 
     private fun startCallActivity() {
+        Log.w("_accept_trace","startCallActivity")
         val intent = Intent(context, CallMainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)

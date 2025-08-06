@@ -84,7 +84,7 @@ mavenPublishing {
             )
     )
 
-    coordinates("io.github.zhangwenxue", "homecarevod-tuicallkit-kt", "0.0.5")
+    coordinates("io.github.zhangwenxue", "homecarevod-tuicallkit-kt", "0.0.6")
 
     pom {
         name = "HomeCareVod Core,.Lib"
