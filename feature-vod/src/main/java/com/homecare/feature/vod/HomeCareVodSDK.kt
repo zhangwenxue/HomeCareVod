@@ -540,6 +540,7 @@ object HomeCareVodSDK {
     @Suppress("DEPRECATION")
     private fun joinInGroupCall(resp: VodCallResp?) {
         resp ?: return
+        _callingStateFlow.update { CallingState.Connected }
         val roomId = TUICommonDefine.RoomId()
         roomId.intRoomId = runCatching { resp.roomId.toInt() }.getOrElse { -1 }
         TUICallKit.createInstance(appContext).joinInGroupCall(
@@ -547,7 +548,6 @@ object HomeCareVodSDK {
             TUICallDefine.MediaType.Video
         )
         trace("Trtc: joining in group call")
-        _callingStateFlow.update { CallingState.Connected }
     }
 
     private fun setCallkitInfo(request: VodCallReq) {
