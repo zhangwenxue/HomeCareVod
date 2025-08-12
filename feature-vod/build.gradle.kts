@@ -70,7 +70,7 @@ mavenPublishing {
         )
     )
 
-    coordinates("io.github.zhangwenxue", "homecarevod", "0.1.0")
+    coordinates("io.github.zhangwenxue", "homecarevod", "0.1.1")
 
     pom {
         name.set("HomeCareVod module")

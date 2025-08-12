@@ -122,7 +122,7 @@ object HomeCareVodSDK {
         override fun onRecvNewMessage(msg: V2TIMMessage?) {
             val msgTimeStamp = msg?.timestamp ?: 0
             super.onRecvNewMessage(msg)
-            if (System.currentTimeMillis() - msgTimeStamp > 5000) {
+            if (System.currentTimeMillis() / 1000 - msgTimeStamp > 6) {
                 trace("Trtc: abandon msg:\n$msg")
                 return
             }
