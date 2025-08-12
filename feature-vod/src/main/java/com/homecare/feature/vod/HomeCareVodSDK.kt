@@ -120,7 +120,12 @@ object HomeCareVodSDK {
 
     private val v2TIMAdvancedMsgListener = object : V2TIMAdvancedMsgListener() {
         override fun onRecvNewMessage(msg: V2TIMMessage?) {
+            val msgTimeStamp = msg?.timestamp ?: 0
             super.onRecvNewMessage(msg)
+            if (System.currentTimeMillis() - msgTimeStamp > 5000) {
+                trace("Trtc: abandon msg:\n$msg")
+                return
+            }
             trace("Trtc: received new msg:\n$msg")
             if (msg?.msgID == null) return
             when (msg.elemType) {

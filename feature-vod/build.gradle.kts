@@ -45,10 +45,10 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 //    implementation(project(":core-api"))
-    implementation("io.github.zhangwenxue:homecarevod-core-api:0.0.4")
+    implementation(libs.homecarevod.core.api)
     implementation(libs.glide)
-    api(project(":tuicallkit-kt"))
-//    api("io.github.zhangwenxue:homecarevod-tuicallkit-kt:0.0.6")
+//    api(project(":tuicallkit-kt"))
+    api(libs.homecarevod.tuicallkit.kt)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.timpush)
     implementation(libs.fcm)
@@ -70,7 +70,7 @@ mavenPublishing {
         )
     )
 
-    coordinates("io.github.zhangwenxue", "homecarevod", "0.0.9")
+    coordinates("io.github.zhangwenxue", "homecarevod", "0.1.0")
 
     pom {
         name.set("HomeCareVod module")
